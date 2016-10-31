@@ -7,6 +7,8 @@ from utilsMsg import message_handler, get_message
 def get_machine_info():
     host_name = socket.gethostname()
     ip_address = socket.gethostbyname(host_name)
+    print "\t** Current IP: %s **\n\t** Current Host: %s **" % (ip_address, host_name)
+    # run on flip3.engr.oregonstate.edu: 128.193.36.41
     return ip_address
 
 
@@ -39,7 +41,7 @@ def server_create(port):
 def server_listen(s, server_handle):
     connected = False
     while 1:
-        print "Server is ready to receive"
+        print "\nServer is ready to receive\n"
         conn_socket, address = s.accept()
         handle_connection(conn_socket, address, server_handle)
 

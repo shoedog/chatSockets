@@ -23,13 +23,16 @@ def response_handler(client_socket, handle, client_handle):
 
 def receipt_handler(client_socket, client_handle):
     message = client_socket.recv(1024)
+    message = message.rstrip('\n');
     if "\quit" in message:
         print "%s left the chat." % client_handle
         return 0
     else:
-        print message
+        print client_handle + ': ' + message
 
 
 def get_message(client_socket):
     data = client_socket.recv(1024)
+    data = data.rstrip('\n');
+    #print "data from client: %s" % data
     return data
