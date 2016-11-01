@@ -61,13 +61,13 @@ int setStructs(char*[], struct addrinfo *, struct addrinfo **);
 int initiateContact(int *, struct addrinfo *);
 
 // Send a message over connected socket
-int sendMessage(int *, char *);
+int sendMessage(int *, char *, char *);
 
 // Receive a message over connected socket
-int receiveMessage(int *);
+int receiveMessage(int *, char *);
 
 // Look for '\quit' command to terminate connection
-int findQuit(char *);
+int findQuit(char *, char *);
 
 
 int main(int argc, char*argv[]){
@@ -76,7 +76,9 @@ int main(int argc, char*argv[]){
     struct addrinfo hints;        // address info initializer
     struct addrinfo *servinfo;    // pointer to getaddrinfo() results
     char clientHandle[11];        // 10 char Handle for client
+	char remoteHandle[11];		  // 10 character handle for remote
     char message[501];            // 500 char message
+	
 
     INIT_MSG;
 
@@ -91,15 +93,15 @@ int main(int argc, char*argv[]){
     setStructs(argv, &hints, &servinfo);    // set external address and socket
 
     initiateContact(&sockfd, servinfo);     // connect to server over socket
-    sendMessage(&sockfd, clientHandle);     // send initial msg (Handle)
+    sendMessage(&sockfd, clientHandle, remoteHandle);     // send initial msg (Handle)
 
-    // Loop to recieve and send messages while connected
+    // Loop to receive and send messages while connected
     while(1){
-        if ( receiveMessage(&sockfd) == 1 )
+        if ( receiveMessage(&sockfd, remoteHandle) == 1 )
             break;
 
         messagePrompt(message);
-        if ( sendMessage(&sockfd, message) == 1 )
+        if ( sendMessage(&sockfd, message, remoteHandle) == 1 )
             break;
 
         message[0] = '\0';
@@ -232,7 +234,7 @@ int initiateContact(int *sockfd, struct addrinfo *servinfo){
 *   Purpose: Send message over socket
 *
 ******************************************************************************/
-int sendMessage(int *sockfd, char *msg){
+int sendMessage(int *sockfd, char *msg, char *remoteHandle){
 	int len;  // message length
 
 	// set message length
@@ -242,7 +244,7 @@ int sendMessage(int *sockfd, char *msg){
 	if( send(*sockfd, msg, len, 0) == -1 )
 		perror("send");
 
-	return findQuit(msg);
+	return findQuit(remoteHandle, msg);
 }
 
 /******************************************************************************
@@ -258,7 +260,7 @@ int sendMessage(int *sockfd, char *msg){
 *   Purpose: Receive message over socket
 *
 ******************************************************************************/
-int receiveMessage(int *sockfd){
+int receiveMessage(int *sockfd, char *remoteHandle){
     int numbytes;           // bytes received
     char buf[MAXDATASIZE];  // max size to receive
 
@@ -272,7 +274,7 @@ int receiveMessage(int *sockfd){
     buf[numbytes] = '\0';
 
     // look for '\quit' message to close connection
-    if( findQuit(buf) != 0 ){
+    if( findQuit(remoteHandle, buf) != 0 ){
         return 1;
     }
 
@@ -295,14 +297,18 @@ int receiveMessage(int *sockfd){
 *   Purpose: Find quit command to close connection
 *
 ******************************************************************************/
-int findQuit(char *message){
+int findQuit(char *remoteHandle, char *message){
     char *quit;
-    char remoteName[6];
+    //char remoteName[6];
 
     if((quit = strstr(message, "\\quit")) != NULL ) {
-        strncpy( remoteName, message, 5 );
-        printf("Connection to %s terminated.\n", remoteName );
-        return 1;
+        strncpy( remoteHandle, message, 5 );
+		if ( strncmp ( remoteHandle, "\\quit", 5 ) != 0 ) {
+			printf("Connection to %s terminated.\n", remoteHandle );
+       } else {
+			printf("You ended the connection.\n" );
+	   }
+		 return 1;
     } else {
         return 0;
     }
