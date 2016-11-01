@@ -1,3 +1,26 @@
+# Author: Wesley Jinks
+# Date: 10/30/2016
+# Last Mod: 10/31/2016
+# File Name: server.py
+# Associated Required Files: utilsIO.py, utilsMsg.py, utilsServer.py
+# Test Client: client.py
+# Production Client: ../Client/client.c
+#
+# Overview: Chat Server to recieve and send messages with chat-server over TCP
+#
+# Input: Usage: python ./server.py <Port to Listen On>
+#   handle: a 10 character string identifier
+#   messages: a message to send to the client
+#   disconnect: \quit
+#
+# Output: Prompts for input, server listening message, messages from client,
+#   connection initialized and connection terminated messages
+#
+# References:
+#   Python Docs Socket: https://docs.python.org/2/library/socket.html
+#   Python Docs Built-In Functions: https://docs.python.org/2/library/functions.html
+#   Python Docs signal: https://docs.python.org/2/library/signal.html
+#
 import signal
 from utilsIO import *
 from utilsServer import *
