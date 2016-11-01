@@ -4,8 +4,8 @@ from utilsIO import input_handler
 
 from utilsMsg import message_handler
 
-HOST = '128.193.36.41'    # The remote host
-PORT = 5000              # The same port as used by the server
+HOST = '10.0.0.6'    # The remote host
+PORT = 5500              # The same port as used by the server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 handle = input_handler('Input Handle: ')

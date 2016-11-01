@@ -1,19 +1,26 @@
+import signal
 from utilsIO import *
 from utilsServer import *
-import signal
-import sys
 
-def signal_handler(signal, frame):
-    print('You Pressed Ctrl+C, shutting down server\n')
-    sys.exit(0)
 
 def main():
+    """Handles Server Program
+
+    Initializes Signal for CTRL-C to Exit
+    Prints Welcome Message
+    Gets Port Number from Command Line Argument
+    Requests Handle Name Input for Server
+    Initializes Server Socket on Port
+    Listens on Port for Incoming Requests
+
+    :return: NULL
+    """
     signal.signal(signal.SIGINT, signal_handler)
     print ('\n\n\n\n\n\t***Welcome to the Chat Server***\n\n')
     print ('Press Ctrl-C to shut down server and exit.\n\n')
     port = get_arg(parse_cmdline(), 1)
     server_handle = input_handler("Input Handle: ")
-    server_socket = server_create(port)
+    server_socket = open_socket(get_machine_info(), port)
     server_listen(server_socket, server_handle)
 
 
